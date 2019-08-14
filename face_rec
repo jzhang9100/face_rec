@@ -14,11 +14,12 @@ class face_fun:
         if self.vidCap.isOpened():  # try to get the first frame
             retval, frame = self.vidCap.read()
             while retval:
+                frame = self.process_frame(frame)
                 cv2.imshow("Face", frame)
                 retval, frame = self.vidCap.read()
-                if(i % 2 == 0):
-                    cv2.imwrite(self.dir+'my_face'+str(i//2)+'.jpg', frame)
-                i+=1
+                #if(i % 2 == 0):
+                #   cv2.imwrite(self.dir+'my_face'+str(i//2)+'.jpg', frame)
+                #i+=1
                 key = cv2.waitKey(20)
                 if key == 27:  # exit on ESC
                     break
@@ -26,7 +27,13 @@ class face_fun:
             cv2.destroyWindow("Face")
 
     def process_frame(self, img):
-        img = cv2.resize(img, (640, 480))
-        print(img.shape)
-        img_arr = np.array(img)/255
-        return img_arr
+        #use openCv's Haar-cascade detection
+        face_cascade = cv2.CascadeClassifier('D:\\MAS\\Python\\Lib\\site-packages\\cv2\\data\\haarcascade_frontalface_default.xml')
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        f = face_cascade.detectMultiScale(gray, 1.3, 5)
+
+        #draw rectangle around detected face
+        for (x,y,w,h) in f:
+            cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
+
+        return img
