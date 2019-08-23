@@ -1,2 +1,2 @@
 # face_rec
-playing around with openCV2 and face recognition
+playing around with openCV2 and face recognition, nothing serious
